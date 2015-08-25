@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-// TODO: Für Databinding einbinden:
-//apply plugin: 'com.android.databinding'
+// TODO Für Databinding einbinden:
+apply plugin: 'com.android.databinding'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.0"
