@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void enableDisableLoginButton()
     {
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setEnabled(mLoginViewModel.isInputValid());
+        btnLogin.setEnabled(mLoginViewModel.getInputValid());
     }
 
     /**

@@ -1,80 +1,40 @@
 package com.mtag.androiddatabindingtutorial;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.mtag.androiddatabindingtutorial.databinding.ActivityMainDatabindingBinding;
 
 public class MainActivityDatabinding extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     LoginViewModel mLoginViewModel = new LoginViewModel();
-    RelativeLayout mMainLayout;
+    ActivityMainDatabindingBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_databinding);
+        mBinding.setViewModel(mLoginViewModel);
 
-        mMainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         // Authentication Mode Spinner provisioning and Eventhandler
-        Spinner spinner = (Spinner) findViewById(R.id.spAuthMethod);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.auth_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-        // Add Watchers to EditTexts
-        EditText edUsername = (EditText) findViewById(R.id.edUsername);
-        edUsername.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(String newValue) {
-                mLoginViewModel.setUsername(newValue);
-                // Reflect changes in textview
-                TextView tvUsernameValue = (TextView) findViewById(R.id.tvUsernameValue);
-                tvUsernameValue.setText(newValue);
-                enableDisableLoginButton();
-            }
-        });
-        
-        EditText edPassword = (EditText) findViewById(R.id.edPassword);
-        edPassword.addTextChangedListener(new SimpleTextWatcher(){
-            @Override
-            public void onTextChanged(String newValue) {
-                mLoginViewModel.setPassword(newValue);
-                // Reflect changes in textview
-                TextView tvPasswordValue = (TextView) findViewById(R.id.tvPasswordValue);
-                tvPasswordValue.setText(newValue);
-                enableDisableLoginButton();
-            }
-        });
-
-        EditText edDomain = (EditText) findViewById(R.id.edDomain);
-        edDomain.addTextChangedListener(new SimpleTextWatcher(){
-            @Override
-            public void onTextChanged(String newValue) {
-                mLoginViewModel.setDomain(newValue);
-                // Reflect changes in textview
-                TextView tvDomainValue = (TextView) findViewById(R.id.tvDomainValue);
-                tvDomainValue.setText(newValue);
-                enableDisableLoginButton();
-            }
-        });
+        // Bindings to Views automatically generated on those having IDs.
+        mBinding.spAuthMethod.setAdapter(adapter);
+        mBinding.spAuthMethod.setOnItemSelectedListener(this);
 
     }
 
@@ -105,22 +65,12 @@ public class MainActivityDatabinding extends AppCompatActivity implements Adapte
         mLoginViewModel.setAuthMethod(LoginViewModel.AUTH_METHOD.values()[position]);
         // Hide / show Domain
         showHideDomain(position == LoginViewModel.AUTH_METHOD.WINDOWS.ordinal());
-        enableDisableLoginButton();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         mLoginViewModel.setAuthMethod(null);
         showHideDomain(false);
-    }
-
-    /**
-     * Convenience Method to change the state of the button according to form data validity
-     */
-    private void enableDisableLoginButton()
-    {
-        Button btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setEnabled(mLoginViewModel.isInputValid());
     }
 
     /**
@@ -155,34 +105,13 @@ public class MainActivityDatabinding extends AppCompatActivity implements Adapte
     }
 
     /**
-     * Simple TextWatcher to get notified on EditText changes
-     */
-    public abstract class SimpleTextWatcher implements TextWatcher {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            onTextChanged(s.toString());
-        }
-
-        public abstract void onTextChanged(String newValue);
-    }
-
-    /**
      * Show a Snackbar message
      * @param message message to show
      * @param length One of Snackbar.LENGTH_*
      */
     protected void showSnackbar(String message, int length) {
         Snackbar
-                .make(mMainLayout, message, length)
+                .make(mBinding.mainLayout, message, length)
                         //.setAction(R.string.snackbar_action, myOnClickListener)
                 .show(); // Don’t forget to show!
     }
