@@ -67,6 +67,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:entries="@array/auth_array"
+        app:onItemSelectedListener="@{viewModel.authMethodSelectedListener}"
         app:selection="@{viewModel.authMethod.ordinal()}"/>
 
     <android.support.design.widget.TextInputLayout
@@ -178,7 +179,7 @@
         android:id="@+id/btnLogin"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="login"
+        android:onClick="@{viewModel.onLogin}"
         android:enabled="@{!viewModel.username.isEmpty() &amp;&amp; !viewModel.password.isEmpty() &amp;&amp; (viewModel.authMethod == AUTH_METHOD.BASIC || !viewModel.domain.isEmpty())}"/>
 </RelativeLayout>
 </layout>

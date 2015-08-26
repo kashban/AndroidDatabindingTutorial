@@ -7,11 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.mtag.androiddatabindingtutorial.databinding.ActivityMainDatabindingBinding;
 
-public class MainActivityDatabinding extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivityDatabinding extends AppCompatActivity {
 
     LoginViewModelDatabinding mLoginViewModelDatabinding = new LoginViewModelDatabinding();
     ActivityMainDatabindingBinding mBinding;
@@ -22,9 +21,6 @@ public class MainActivityDatabinding extends AppCompatActivity implements Adapte
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_databinding);
         mLoginViewModelDatabinding.authMethod.set(LoginViewModelDatabinding.AUTH_METHOD.WINDOWS);
         mBinding.setViewModel(mLoginViewModelDatabinding);
-
-        // Authentication Mode Spinner provisioning and Eventhandler
-        mBinding.spAuthMethod.setOnItemSelectedListener(this);
 
     }
 
@@ -50,32 +46,14 @@ public class MainActivityDatabinding extends AppCompatActivity implements Adapte
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        mLoginViewModelDatabinding.authMethod.set(LoginViewModelDatabinding.AUTH_METHOD.values()[position]);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        mLoginViewModelDatabinding.authMethod.set(null);
-    }
-
-    public void login(View view) {
-        showSnackbar(String.format(
-                    getString(R.string.msgLogin), mLoginViewModelDatabinding.username.get()
-                    + "/" + mLoginViewModelDatabinding.password.get()
-                    + (mLoginViewModelDatabinding.authMethod.get() == LoginViewModelDatabinding.AUTH_METHOD.WINDOWS ? "/" + mLoginViewModelDatabinding.domain.get() : "")),
-                Snackbar.LENGTH_SHORT);
-    }
-
     /**
      * Show a Snackbar message
      * @param message message to show
      * @param length One of Snackbar.LENGTH_*
      */
-    protected void showSnackbar(String message, int length) {
+    public static void showSnackbar(View rootView, String message, int length) {
         Snackbar
-                .make(mBinding.mainLayout, message, length)
+                .make(rootView, message, length)
                         //.setAction(R.string.snackbar_action, myOnClickListener)
                 .show(); // Don’t forget to show!
     }

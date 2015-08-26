@@ -6,8 +6,11 @@ import android.databinding.BindingAdapter;
 import android.databinding.BindingConversion;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -88,5 +91,46 @@ public class LoginViewModelDatabinding extends BaseObservable {
     @BindingAdapter("app:selection")
     public static void setSelection(Spinner spinner, int position) {
         spinner.setSelection(position);
+    }
+
+    /**
+     * Create an OnItemSelectedListener for the Spinner to update the model
+     * @return OnItemSelectedListener to use
+     */
+    public Spinner.OnItemSelectedListener getAuthMethodSelectedListener() {
+
+        return new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                authMethod.set(AUTH_METHOD.values()[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                authMethod.set(AUTH_METHOD.BASIC);
+            }
+
+        };
+    }
+
+    /**
+     * Trigger Login
+     * @return OnClickListener
+     */
+    @Bindable
+    public View.OnClickListener getOnLogin() {
+
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View buttonView) {
+                MainActivityDatabinding.showSnackbar(buttonView.getRootView(), String.format(
+                                buttonView.getContext().getString(R.string.msgLogin), username.get()
+                                        + "/" + password.get()
+                                        + (authMethod.get() == LoginViewModelDatabinding.AUTH_METHOD.WINDOWS ? "/" + domain.get() : "")),
+                        Snackbar.LENGTH_SHORT);
+            }
+
+        };
     }
 }
