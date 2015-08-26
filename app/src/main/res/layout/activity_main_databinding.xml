@@ -4,7 +4,9 @@
     <data>
         <variable
             name="viewModel"
-            type="com.mtag.androiddatabindingtutorial.LoginViewModel"/>
+            type="com.mtag.androiddatabindingtutorial.LoginViewModelDatabinding"/>
+        <import type="com.mtag.androiddatabindingtutorial.LoginViewModelDatabinding.AUTH_METHOD"/>
+        <import type="android.view.View"/>
     </data>
 <RelativeLayout
     android:id="@+id/mainLayout"
@@ -39,8 +41,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
             android:inputType="text|textNoSuggestions|textPersonName"
-            android:text="@{viewModel.username}"
-            app:addTextChangedListener="@{viewModel.onUsernameChanged}"/>
+            app:binding="@{viewModel.username}"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -54,9 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"
-            android:text="@{viewModel.password}"
-            android:inputType="textVisiblePassword"
-            app:addTextChangedListener="@{viewModel.onPasswordChanged}"/>
+            app:binding="@{viewModel.password}"
+            android:inputType="textVisiblePassword"/>
     </android.support.design.widget.TextInputLayout>
 
     <Spinner
@@ -65,14 +65,16 @@
         android:id="@+id/spAuthMethod"
         android:layout_below="@+id/tilPassword"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:entries="@array/auth_array"
+        app:selection="@{viewModel.authMethod.ordinal()}"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tilDomain"
         android:layout_below="@+id/spAuthMethod"
-        android:visibility="gone"
+        android:visibility="@{viewModel.authMethod == AUTH_METHOD.WINDOWS ? View.VISIBLE : View.GONE}"
         android:layout_marginTop="@dimen/activity_vertical_margin">
 
         <EditText
@@ -81,8 +83,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_domain"
             android:inputType="text"
-            android:text="@{viewModel.domain}"
-            app:addTextChangedListener="@{viewModel.onDomainChanged}"/>
+            app:binding="@{viewModel.domain}"
+            />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
@@ -107,7 +109,8 @@
         android:layout_below="@+id/tvInputsTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:labelFor="@id/tvUsernameValue" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -152,7 +155,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:visibility="gone"/>
+        android:visibility="@{viewModel.authMethod == AUTH_METHOD.WINDOWS ? View.VISIBLE : View.GONE}"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -164,7 +168,8 @@
         android:layout_alignRight="@+id/tvInputsTitle"
         android:layout_alignEnd="@+id/tvInputsTitle"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:visibility="gone"/>
+        android:visibility="@{viewModel.authMethod == AUTH_METHOD.WINDOWS ? View.VISIBLE : View.GONE}"
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -174,6 +179,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:onClick="login"
-        android:enabled="@{viewModel.inputValid}"/>
+        android:enabled="@{!viewModel.username.isEmpty() &amp;&amp; !viewModel.password.isEmpty() &amp;&amp; (viewModel.authMethod == AUTH_METHOD.BASIC || !viewModel.domain.isEmpty())}"/>
 </RelativeLayout>
 </layout>
